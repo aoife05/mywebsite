@@ -8,19 +8,19 @@
     "net7.0": []
   },
   "packageFolders": {
-    "/Users/aoifeoconnor/.nuget/packages/": {}
+    "C:\\Users\\442445\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/Users/aoifeoconnor/Documents/B8IT122/mywebsite/mywebsite.csproj",
+      "projectUniqueName": "C:\\Fiona\\Personal\\DBS\\B8IT122\\CA\\Aoife\\mywebsite\\mywebsite.csproj",
       "projectName": "mywebsite",
-      "projectPath": "/Users/aoifeoconnor/Documents/B8IT122/mywebsite/mywebsite.csproj",
-      "packagesPath": "/Users/aoifeoconnor/.nuget/packages/",
-      "outputPath": "/Users/aoifeoconnor/Documents/B8IT122/mywebsite/obj/",
+      "projectPath": "C:\\Fiona\\Personal\\DBS\\B8IT122\\CA\\Aoife\\mywebsite\\mywebsite.csproj",
+      "packagesPath": "C:\\Users\\442445\\.nuget\\packages\\",
+      "outputPath": "C:\\Fiona\\Personal\\DBS\\B8IT122\\CA\\Aoife\\mywebsite\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "/Users/aoifeoconnor/.nuget/NuGet/NuGet.Config"
+        "C:\\Users\\442445\\AppData\\Roaming\\NuGet\\NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net7.0"
@@ -62,7 +62,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/7.0.400/RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.400\\RuntimeIdentifierGraph.json"
       }
     }
   }
