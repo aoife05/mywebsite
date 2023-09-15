@@ -3,7 +3,8 @@ pipeline {
     stages {
         stage('Dotnet build') {
             steps {
-                // Add your Dotnet build steps here
+                dotnet clean
+                dotnet build// Addotnetd your Dotnet build steps here
             }
         }
         
