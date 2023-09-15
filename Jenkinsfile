@@ -1,23 +1,22 @@
 pipeline {
     agent any
     stages {
-        stage('Dotnet build') {
+        stage('Dotnet Build') {
             steps {
-                dotnet clean
-                dotnet build// Addotnetd your Dotnet build steps here
+                // Use the 'sh' step to run shell commands
+                sh 'dotnet clean'
+                sh 'dotnet build'
+                // Add your Dotnet build steps here
             }
-
-            
         }
         
         stage('Docker Build') {
-            agent any
             steps {
-                script {
-                    // Make sure to escape single quotes within the shell command
-                    sh "docker build -t aoifemoconnor/mywebsite:latest ."
-                }
+                // Use the 'sh' step to run shell commands
+                sh 'docker build -t aoifemoconnor/mywebsite:latest .'
             }
         }
     }
 }
+
+
