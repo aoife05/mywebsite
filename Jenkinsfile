@@ -4,8 +4,8 @@ pipeline {
         stage('Dotnet Build') {
             steps {
                 // Use the 'sh' step to run shell commands
-                sh 'dotnet clean'
-                sh 'dotnet build'
+             
+                 sh 'dotnet build' 
                 // Add your Dotnet build steps here
             }
         }
@@ -13,7 +13,7 @@ pipeline {
         stage('Docker Build') {
             steps {
                 // Use the 'sh' step to run shell commands
-                sh 'docker build -t aoifemoconnor/mywebsite:latest .'
+                 sh 'docker build aoifemoconnor/mywebsite:latest .'
             }
         }
     }
