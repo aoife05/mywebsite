@@ -6,6 +6,8 @@ pipeline {
                 dotnet clean
                 dotnet build// Addotnetd your Dotnet build steps here
             }
+
+            
         }
         
         stage('Docker Build') {
