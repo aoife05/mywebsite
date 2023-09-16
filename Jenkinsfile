@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_IMAGE = 'aoifemoconnor/dotnet-mywebsite'
+        DOCKER_IMAGE = 'aoifemoconnor/mywebsite'
         EB_APP_NAME = 'your-elastic-beanstalk-app-name'
         EB_ENV_NAME = 'your-elastic-beanstalk-env-name'
     }
@@ -13,7 +13,7 @@ pipeline {
                 checkout scm
                 script {
                     // Set the desired .NET Core version if necessary
-                    def dotnetVersion = '3.1' // or '5.0'
+                    def dotnetVersion = '7.0.400' // or '5.0'
                     sh "dotnet build -c Release"
                 }
             }
