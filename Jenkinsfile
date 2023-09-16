@@ -1,47 +1,61 @@
 pipeline {
     agent any
 
+    environment {
+        DOCKER_IMAGE_NAME = 'mywebsite'
+        AWS_REGION = 'your-aws-region'
+        AWS_ACCESS_KEY_ID = credentials('your-aws-access-key-id-credential-id')
+        AWS_SECRET_ACCESS_KEY = credentials('your-aws-secret-access-key-credential-id')
+        AWS_ECR_REPO_URL = 'your-ecr-repo-url'
+        GITHUB_REPO_URL = 'https://github.com/aoife05/mywebsite.git'
+        DOTNET_CLI_VERSION = '7.0.400' // or '5.0' or your desired .NET Core version
+    }
+
     stages {
         stage('Checkout') {
             steps {
-                // Checkout the code from your GitHub repository
-                git 'https://github.com/aoife05/mywebsite.git'
-            }
-        }
-        
-        stage('Dotnet Build') {
-            steps {
-                // Use the 'sh' step to run shell commands for .NET build
-                sh 'dotnet build'
-                // Add more .NET build steps as needed
+                checkout scm
             }
         }
 
-        stage('Docker Build and Push') {
+        stage('Build .NET Core App') {
             steps {
-                // Build the Docker image
-                sh 'docker build -t aoifemoconnor/mywebsite:latest .'
-
-                // Push the Docker image to a Docker registry (e.g., Docker Hub)
-                sh 'docker push aoifemoconnor/mywebsite:latest'
+                script {
+                    sh "dotnet restore"
+                    sh "dotnet build -c Release"
+                }
             }
         }
 
-        stage('Deploy to AWS EC2') {
+        stage('Build Docker Image') {
             steps {
-                // Use the 'sh' step to run shell commands for AWS deployment
-                sh '''
-                    # Install AWS CLI (if not already installed)
-                    pip install awscli --upgrade --user
+                script {
+                    def dockerImage = docker.build("mywebsite:latest", "--build-arg DOTNET_VERSION=7.0.400 .")
+                }
+            }
+        }
 
-                    # Configure AWS CLI with your credentials
-                    aws configure set aws_access_key_id YOUR_ACCESS_KEY_ID
-                    aws configure set aws_secret_access_key YOUR_SECRET_ACCESS_KEY
-                    aws configure set default.region YOUR_AWS_REGION
+        stage('Push Docker Image to ECR') {
+            steps {
+                script {
+                    withCredentials([string(credentialsId: 'your-aws-ecr-credentials', variable: 'AWS_CREDENTIALS')]) {
+                        sh """
+                            export AWS_ACCESS_KEY_ID=\$AWS_CREDENTIALS_AWS_ACCESS_KEY_ID
+                            export AWS_SECRET_ACCESS_KEY=\$AWS_CREDENTIALS_AWS_SECRET_ACCESS_KEY
+                            export AWS_DEFAULT_REGION=\$AWS_CREDENTIALS_AWS_DEFAULT_REGION
 
-                    # Deploy your Docker container to an AWS EC2 instance using ECS or other methods
-                    # Example: ecs-cli compose --file your-docker-compose-file.yml up
-                '''
+                            aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $AWS_ECR_REPO_URL
+                            docker push $AWS_ECR_REPO_URL:$BUILD_NUMBER
+                        """
+                    }
+                }
+            }
+        }
+
+        stage('Deploy to EC2') {
+            steps {
+                // Add your deployment steps here, e.g., SSH into EC2 instance and run docker container
+                // You may need to use SSH Agent and SSH keys for secure access to the EC2 instance
             }
         }
     }
