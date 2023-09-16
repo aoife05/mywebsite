@@ -8,15 +8,19 @@ pipeline {
     }
 
     stages {
-        stage('Build') {
+        stage('Build .Net Core App') {
             steps {
-                checkout scm
-                script {
-                    sh 'dotnet restore'
-                    sh 'dotnet publish -c Release -o ./publish'
-                }
+                checkout scm  
+                sh "dotnet build" 
             }
+
         }
+
+
+
+
+
+
 
         stage('Dockerize') {
             steps {
