@@ -2,60 +2,42 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_IMAGE_NAME = 'aoifemoconnor/mywebsite'
-        AWS_REGION = 'your-aws-region'
-        AWS_ACCESS_KEY_ID = credentials('your-aws-access-key-id-credential-id')
-        AWS_SECRET_ACCESS_KEY = credentials('your-aws-secret-access-key-credential-id')
-        AWS_ECR_REPO_URL = 'your-ecr-repo-url'
-        GITHUB_REPO_URL = 'https://github.com/aoife05/mywebsite.git'
-        DOTNET_CLI_VERSION = '7.0.10' // or '5.0' or your desired .NET Core version
+        DOCKER_IMAGE = 'aoifemoconnor/dotnet-mywebsite'
+        EB_APP_NAME = 'your-elastic-beanstalk-app-name'
+        EB_ENV_NAME = 'your-elastic-beanstalk-env-name'
     }
 
     stages {
-        stage('Checkout') {
+        stage('Build') {
             steps {
                 checkout scm
-            }
-        }
-
-        stage('Build .NET Core App') {
-            steps {
                 script {
-                    sh "dotnet restore"
-                    sh "dotnet build -c Release"
+                    sh 'dotnet restore'
+                    sh 'dotnet publish -c Release -o ./publish'
                 }
             }
         }
 
-        stage('Build Docker Image') {
+        stage('Dockerize') {
             steps {
                 script {
-                    def dockerImage = docker.build("aoifemoconnor/mywebsite:latest", "--build-arg DOTNET_VERSION=7.0.10 .")
+                    sh 'docker build -t $DOCKER_IMAGE .'
                 }
             }
         }
 
-        stage('Push Docker Image to ECR') {
+        stage('Deploy to AWS Elastic Beanstalk') {
             steps {
                 script {
-                    withCredentials([string(credentialsId: 'your-aws-ecr-credentials', variable: 'AWS_CREDENTIALS')]) {
-                        sh """
-                            export AWS_ACCESS_KEY_ID=\$AWS_CREDENTIALS_AWS_ACCESS_KEY_ID
-                            export AWS_SECRET_ACCESS_KEY=\$AWS_CREDENTIALS_AWS_SECRET_ACCESS_KEY
-                            export AWS_DEFAULT_REGION=\$AWS_CREDENTIALS_AWS_DEFAULT_REGION
-
-                            aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $AWS_ECR_REPO_URL
-                            docker push $AWS_ECR_REPO_URL:$BUILD_NUMBER
-                        """
+                    withAWS(credentials: 'your-aws-credentials-id', region: 'your-aws-region') {
+                        elasticBeanstalkCreateApplication(applicationName: EB_APP_NAME)
+                        elasticBeanstalkCreateEnvironment(applicationName: EB_APP_NAME, environmentName: EB_ENV_NAME, environmentType: 'SingleInstance')
+                        elasticBeanstalkUploadArtifact(applicationName: EB_APP_NAME, environmentName: EB_ENV_NAME, sourceBundle: [
+                            zipFile: "./publish"
+                        ])
+                        elasticBeanstalkDeployVersion(applicationName: EB_APP_NAME, environmentName: EB_ENV_NAME)
                     }
                 }
-            }
-        }
-
-        stage('Deploy to EC2') {
-            steps {
-                // Add your deployment steps here, e.g., SSH into EC2 instance and run docker container
-                // You may need to use SSH Agent and SSH keys for secure access to the EC2 instance
             }
         }
     }
