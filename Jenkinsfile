@@ -2,13 +2,13 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_IMAGE_NAME = 'mywebsite'
+        DOCKER_IMAGE_NAME = 'aoifemoconnor/mywebsite'
         AWS_REGION = 'your-aws-region'
         AWS_ACCESS_KEY_ID = credentials('your-aws-access-key-id-credential-id')
         AWS_SECRET_ACCESS_KEY = credentials('your-aws-secret-access-key-credential-id')
         AWS_ECR_REPO_URL = 'your-ecr-repo-url'
         GITHUB_REPO_URL = 'https://github.com/aoife05/mywebsite.git'
-        DOTNET_CLI_VERSION = '7.0.400' // or '5.0' or your desired .NET Core version
+        DOTNET_CLI_VERSION = '7.0.10' // or '5.0' or your desired .NET Core version
     }
 
     stages {
@@ -30,7 +30,7 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 script {
-                    def dockerImage = docker.build("mywebsite:latest", "--build-arg DOTNET_VERSION=7.0.400 .")
+                    def dockerImage = docker.build("aoifemoconnor/mywebsite:latest", "--build-arg DOTNET_VERSION=7.0.10 .")
                 }
             }
         }
