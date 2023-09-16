@@ -8,24 +8,21 @@ pipeline {
     }
 
     stages {
-        stage('Build .Net Core App') {
+        stage('Checkout and Build .NET Core App') {
             steps {
-                checkout scm  
-                sh "dotnet build" 
+                checkout scm
+                script {
+                    // Set the desired .NET Core version if necessary
+                    def dotnetVersion = '3.1' // or '5.0'
+                    sh "dotnet build -c Release"
+                }
             }
-
         }
-
-
-
-
-
-
 
         stage('Dockerize') {
             steps {
                 script {
-                    sh 'docker build -t aoifemoconnor/mywebsite:latest .'
+                    sh "docker build -t aoifemoconnor/mywebsite:latest ."
                 }
             }
         }
@@ -34,20 +31,24 @@ pipeline {
             steps {
                 script {
                     withAWS(credentials: 'your-aws-credentials-id', region: 'your-aws-region') {
+                        def versionLabel = env.BUILD_NUMBER
                         elasticBeanstalkCreateApplication(applicationName: EB_APP_NAME)
                         elasticBeanstalkCreateEnvironment(applicationName: EB_APP_NAME, environmentName: EB_ENV_NAME, environmentType: 'SingleInstance')
                         elasticBeanstalkUploadArtifact(applicationName: EB_APP_NAME, environmentName: EB_ENV_NAME, sourceBundle: [
                             zipFile: "./publish"
                         ])
-                        elasticBeanstalkDeployVersion(applicationName: EB_APP_NAME, environmentName: EB_ENV_NAME)
+                        elasticBeanstalkDeployVersion(applicationName: EB_APP_NAME, environmentName: EB_ENV_NAME, versionLabel: versionLabel)
                     }
                 }
             }
         }
     }
+
+    post {
+        success {
+            // Add post-build actions here if needed
+        }
+    }
 }
 
-
-
-
-
+    
