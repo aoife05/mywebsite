@@ -3,8 +3,8 @@ pipeline {
 
     environment {
         DOCKER_IMAGE = 'aoifemoconnor/dotnet-mywebsite'
-        EB_APP_NAME = 'your-elastic-beanstalk-app-name'
-        EB_ENV_NAME = 'your-elastic-beanstalk-env-name'
+        EB_APP_NAME = 'oewoirowerwoei'
+        EB_ENV_NAME = 'Oewoirowerwoei-env'
     }
 
     stages {
@@ -29,13 +29,13 @@ pipeline {
         stage('Deploy to AWS Elastic Beanstalk') {
             steps {
                 script {
-                    withAWS(credentials: 'your-aws-credentials-id', region: 'your-aws-region') {
-                        elasticBeanstalkCreateApplication(applicationName: EB_APP_NAME)
-                        elasticBeanstalkCreateEnvironment(applicationName: EB_APP_NAME, environmentName: EB_ENV_NAME, environmentType: 'SingleInstance')
-                        elasticBeanstalkUploadArtifact(applicationName: EB_APP_NAME, environmentName: EB_ENV_NAME, sourceBundle: [
+                    withAWS(credentials: '103157789009', region: 'eu-west-1') {
+                        elasticBeanstalkCreateApplication(applicationName: oewoirowerwoei)
+                        elasticBeanstalkCreateEnvironment(applicationName: oewoirowerwoei, environmentName: Oewoirowerwoei-env, environmentType: 'SingleInstance')
+                        elasticBeanstalkUploadArtifact(applicationName: oewoirowerwoei, environmentName: Oewoirowerwoei-env, sourceBundle: [
                             zipFile: "./publish"
                         ])
-                        elasticBeanstalkDeployVersion(applicationName: EB_APP_NAME, environmentName: EB_ENV_NAME)
+                        elasticBeanstalkDeployVersion(applicationName: oewoirowerwoei, environmentName: Oewoirowerwoei-env)
                     }
                 }
             }
