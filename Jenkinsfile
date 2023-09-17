@@ -7,7 +7,7 @@ pipeline {
                 checkout scm
                 script {
                     // Set the desired .NET Core version if necessary
-                    def dotnetVersion = '7.0.400' // or '5.0'
+                
                     sh "dotnet build -c Release"
                 }
             }
@@ -21,7 +21,7 @@ pipeline {
             }
         }
 
-        stage('Deploy to AWS Elastic Beanstalk') {
+        stage('Deploy to AWS EC2') {
             steps {
                 script {
                     withAWS(credentials: 'your-aws-credentials-id', region: 'your-aws-region') {
