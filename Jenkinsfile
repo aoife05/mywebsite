@@ -1,12 +1,6 @@
 pipeline {
     agent any
 
-    environment {
-        DOCKER_IMAGE = 'aoifemoconnor/mywebsite'
-        EB_APP_NAME = 'your-elastic-beanstalk-app-name'
-        EB_ENV_NAME = 'your-elastic-beanstalk-env-name'
-    }
-
     stages {
         stage('Checkout and Build .NET Core App') {
             steps {
