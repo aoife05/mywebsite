@@ -14,6 +14,8 @@ pipeline {
                 script {
                     // Set the desired .NET Core version if necessary
                     dotnetBuild configuration: 'Release', sdk: 'dotnetsdk'
+                    dotnetRestore
+                    dotnetRun
                 }
             }
         }
