@@ -22,7 +22,7 @@ pipeline {
         stage('Dockerize') {
             steps {
                 script {
-                    sh "docker build -t aoifemoconnor/mywebsite:latest ."
+                    sh "docker build -t 10616413/mywebsite:latest ."
                 }
             }
         }
