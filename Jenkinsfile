@@ -15,6 +15,7 @@ pipeline {
                     // Set the desired .NET Core version if necessary
                 
                     sh "dotnet build -c Release"
+                    dotnetBuild configuration: 'Release', sdk: 'dotnetsdk'
                 }
             }
         }
