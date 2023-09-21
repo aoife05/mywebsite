@@ -1,0 +1,11 @@
+version: '3'
+
+services:
+  app:
+    image: docker/welcome-to-docker:latest
+    container_name: objective_swanson
+    restart: always
+    ports:
+      - "80:32768"
+    environment:
+      NODE_ENV: production
