@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_IMAGE = 'aoifemoconnor/dotnet-mywebsite'
+        DOCKER_IMAGE = '10616413/dotnet-mywebsite'
         EB_APP_NAME = 'oewoirowerwoei'
         EB_ENV_NAME = 'Oewoirowerwoei-env'
     }
