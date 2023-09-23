@@ -11,15 +11,21 @@
 # EXPOSE 80
 # ENTRYPOINT ["dotnet", "mywebsite.dll"]
 
+# FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
+# WORKDIR /src
+# COPY mywebsite.csproj .
+# RUN dotnet restore
+# COPY . .
+# RUN dotnet publish -c release -o /app
 
-FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
-WORKDIR /src
-COPY mywebsite.csproj .
-RUN dotnet restore
-COPY . .
-RUN dotnet publish -c release -o /app
+# FROM mcr.microsoft.com/dotnet/aspnet:7.0
+# WORKDIR /app
+# COPY --from=build /app .
+# ENTRYPOINT ["dotnet", "mywebsite.dll"]
 
-FROM mcr.microsoft.com/dotnet/aspnet:7.0
+FROM node:18-alpine
 WORKDIR /app
-COPY --from=build /app .
-ENTRYPOINT ["dotnet", "mywebsite.dll"]
+COPY . .
+RUN dotnet restore
+CMD ["node", "src/index.js"]
+EXPOSE 3000
